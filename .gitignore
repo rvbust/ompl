@@ -3,11 +3,12 @@
 *.swp
 build/
 bin/
+Build/
+CMakeFiles/
+CMakeCache.txt
 lib/
 *.pcd
 *.pyc
-*.so
-*.dylib
 CMakeModules/ompl.pc
 doc/markdown/api_overview.md
 doc/markdown/CForest.md
@@ -29,3 +30,26 @@ package.xml
 .dir-locals.el
 *~
 install-ompl-ubuntu.sh
+
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# pyenv
+.python-version
+
+# VS code
+.vscode/
+.vscode/*
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
