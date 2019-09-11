@@ -6,17 +6,33 @@ endif()
 project(ompl CXX C)
 
 # set the default build type
-if (NOT CMAKE_BUILD_TYPE)
-    # By default, use Release mode
-    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Type of build" FORCE)
+set(OMPL_DEBUG_MODE OFF CACHE BOOL "Build OMPL targets in debug mode")
 
-    # On 32bit architectures, use RelWithDebInfo
-    if (CMAKE_COMPILER_IS_GNUCC AND CMAKE_SIZEOF_VOID_P EQUAL 4)
-        set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Type of build" FORCE)
-    endif()
+if (NOT OMPL_DEBUG_MODE)
+  message(STATUS "${ColorBold}${Red}OMPL_DEBUG_MODE is OFF, project will be built in Release mode.${ColorReset}")
+else()
+  message(STATUS "${ColorBold}${Red}OMPL_DEBUG_MODE is ON, project will be built in Debug mode.${ColorReset}")
 endif()
 
-message(STATUS "Building ${CMAKE_BUILD_TYPE}")
+if (OMPL_DEBUG_MODE)
+  add_definitions(-DOMPL_DEBUG)
+  set(CMAKE_BUILD_TYPE "Debug")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+else()
+  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Type of build" FORCE)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -mavx2 -O3") # enable AVX2 and higher optimization 
+
+  # On 32bit architectures, use RelWithDebInfo
+  if (CMAKE_COMPILER_IS_GNUCC AND CMAKE_SIZEOF_VOID_P EQUAL 4)
+    set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Type of build" FORCE)
+  endif()
+endif()
+
+# always show warnings 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+
+message(STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
+
 
 # This shouldn't be necessary, but there has been trouble
 # with MSVC being set off, but MSVCXX ON.
