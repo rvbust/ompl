@@ -61,7 +61,9 @@ ompl::base::ProjectionMatrix::Matrix ompl::base::ProjectionMatrix::ComputeRandom
                 projection(i, j) = rng.gaussian01();
     }
 
-    projection = Eigen::JacobiSVD<Eigen::MatrixXd>(projection, Eigen::ComputeThinV).matrixV().transpose();
+    // projection = Eigen::JacobiSVD<Eigen::MatrixXd>(projection, Eigen::ComputeThinV).matrixV().transpose();
+    /// @qqfly: use DontAlign Eigen matrix (for RVS).
+    projection = Eigen::JacobiSVD<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor | Eigen::DontAlign>>(projection, Eigen::ComputeThinV).matrixV().transpose();
 
     assert(scale.size() == from || scale.size() == 0);
     if (scale.size() == from)
