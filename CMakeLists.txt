@@ -20,7 +20,7 @@ if (OMPL_DEBUG_MODE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 else()
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Type of build" FORCE)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -mavx2 -O3") # enable AVX2 and higher optimization 
+#   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -mavx2 -O3") # enable AVX2 and higher optimization 
 
   # On 32bit architectures, use RelWithDebInfo
   if (CMAKE_COMPILER_IS_GNUCC AND CMAKE_SIZEOF_VOID_P EQUAL 4)
