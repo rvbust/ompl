@@ -37,6 +37,7 @@
 #include "ompl/geometric/planners/rrt/RRTConnect.h"
 #include "ompl/base/goals/GoalSampleableRegion.h"
 #include "ompl/tools/config/SelfConfig.h"
+#include "ompl/util/String.h"
 
 ompl::geometric::RRTConnect::RRTConnect(const base::SpaceInformationPtr &si, bool addIntermediateStates)
   : base::Planner(si, addIntermediateStates ? "RRTConnectIntermediate" : "RRTConnect")
@@ -157,7 +158,7 @@ ompl::geometric::RRTConnect::GrowState ompl::geometric::RRTConnect::growTree(Tre
 
         for (std::size_t i = 1; i < states.size(); ++i)
         {
-            Motion *motion = new Motion;
+            auto *motion = new Motion;
             motion->state = states[i];
             motion->parent = nmotion;
             motion->root = nmotion->root;
@@ -170,7 +171,7 @@ ompl::geometric::RRTConnect::GrowState ompl::geometric::RRTConnect::growTree(Tre
     }
     else
     {
-        Motion *motion = new Motion(si_);
+        auto *motion = new Motion(si_);
         si_->copyState(motion->state, dstate);
         motion->parent = nmotion;
         motion->root = nmotion->root;
@@ -266,7 +267,7 @@ ompl::base::PlannerStatus ompl::geometric::RRTConnect::solve(const base::Planner
 
             /* attempt to connect trees */
 
-            /* if reached, it means we used rstate directly, no need top copy again */
+            /* if reached, it means we used rstate directly, no need to copy again */
             if (gs != REACHED)
                 si_->copyState(rstate, tgi.xstate);
 
@@ -410,5 +411,5 @@ void ompl::geometric::RRTConnect::getPlannerData(base::PlannerData &data) const
     data.addEdge(data.vertexIndex(connectionPoint_.first), data.vertexIndex(connectionPoint_.second));
 
     // Add some info.
-    data.properties["approx goal distance REAL"] = std::to_string(distanceBetweenTrees_);
+    data.properties["approx goal distance REAL"] = ompl::toString(distanceBetweenTrees_);
 }

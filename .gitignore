@@ -53,3 +53,8 @@ pip-delete-this-directory.txt
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
+*.dylib
+py-bindings/ompl/app/
+py-bindings/ompl/bindings_generator.py
+!py-bindings/ompl/bindings_generator.py.in

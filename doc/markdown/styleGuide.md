@@ -75,7 +75,7 @@ int SampleObject::NUM_INSTANCES = 0;
 - Code must compile without warnings.
 - If a class member function can be marked _const_, then it should be marked _const_.
 - Member functions marked as _const_ must be thread safe. If a function is intended to be thread safe, it should be marked as _const_ (one can use the _mutable_ keyword if needed).
-- All classes, methods and member variables must be documented (Doxygen style). High-level documentation can be written either in [MarkDown format](http://www.stack.nl/~dimitri/doxygen/markdown.html) or in Doxygen format.
+- All classes, methods and member variables must be documented (Doxygen style). High-level documentation can be written either in [MarkDown format](https://www.doxygen.nl/manual/markdown.html) or in Doxygen format.
 - Forward declaration of types should be done with the OMPL_CLASS_FORWARD() macro when shared pointers to the type are also needed: OMPL_CLASS_FORWARD() will define a shared pointer to the type using the _Ptr_ suffix (e.g., ompl::base::StateSpacePtr).
 - When passing objects as arguments to functions, the following convention should be used:
    - if possible, pass a _const reference_ to the type; this means that a pointer to the object passed in will not be maintained and no changes need to be made to the object.
@@ -91,7 +91,7 @@ An automatic code formatter is available to automate enforcing the style guide, 
 
 Install **clang_format**. For Ubuntu:
 
-    sudo apt-get install -y clang-format-3.6
+    sudo apt-get install -y clang-format
 
 ### Usage
 
@@ -101,11 +101,11 @@ A configuration file is available at the base of the OMPL repository that will b
 
 Format single file:
 
-    clang-format-3.6 --i -style=file MY_OMPL_FILE.cpp
+    clang-format --i -style=file MY_OMPL_FILE.cpp
 
 Format entire directory recursively including subfolders:
 
-    find . -name '*.h' -or -name '*.hpp' -or -name '*.cpp' | xargs clang-format-3.6 --i -style=file $1
+    find . -name '*.h' -or -name '*.hpp' -or -name '*.cpp' | xargs clang-format --i -style=file $1
 
 #### Emacs Editor Configuration
 
