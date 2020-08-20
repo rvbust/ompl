@@ -132,10 +132,10 @@ endif()
 set_package_properties(Eigen3 PROPERTIES
     URL "http://eigen.tuxfamily.org"
     PURPOSE "A linear algebra library used throughout OMPL.")
-message(STATUS "${EIGEN3_INCLUDE_DIR}")
-find_package(Eigen3 REQUIRED)
+if(NOT EIGEN3_INCLUDE_DIR)
+    find_package(Eigen3 REQUIRED)
+endif()
 include_directories("${EIGEN3_INCLUDE_DIR}")
-message(FATAL_ERROR "${EIGEN3_INCLUDE_DIR}")
 
 set_package_properties(MORSE PROPERTIES
     URL "https://www.openrobots.org/wiki/morse"
