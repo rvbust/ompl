@@ -50,7 +50,7 @@ source_group("OMPL Headers" FILES "${OMPL_HEADERS}")
 if(MSVC)
     add_library(ompl STATIC ${OMPL_SOURCE_CODE})
 else(MSVC)
-    add_library(ompl SHARED ${OMPL_SOURCE_CODE})
+    add_library(ompl STATIC ${OMPL_SOURCE_CODE})
 endif(MSVC)
 target_link_libraries(ompl
     ${OMPL_LINK_LIBRARIES}
