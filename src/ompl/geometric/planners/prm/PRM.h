@@ -37,6 +37,7 @@
 #ifndef OMPL_GEOMETRIC_PLANNERS_PRM_PRM_
 #define OMPL_GEOMETRIC_PLANNERS_PRM_PRM_
 
+#include "ompl/base/spaces/RealVectorStateSpace.h"
 #include "ompl/geometric/planners/PlannerIncludes.h"
 #include "ompl/datastructures/NearestNeighbors.h"
 #include <boost/graph/graph_traits.hpp>
