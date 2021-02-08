@@ -442,7 +442,7 @@ namespace ompl
             /** \brief Joints corresponding to discrete workspaces*/
             std::vector<std::vector<double>> m_joints;
             /** \brief A flag indicating whether to load manually input joints */
-            bool m_load_joints;
+            bool m_load_joints{false};
         };
     }  // namespace geometric
 }  // namespace ompl

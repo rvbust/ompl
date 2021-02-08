@@ -252,6 +252,7 @@ void ompl::geometric::PRM::setup()
     if (this->m_load_joints)
     {
         OMPL_INFORM("PRM RoadMap loading joint points ......");
+        std::cout << "PRM RoadMap loading joint points ......" << std::endl;
         for (size_t i = 0; i < m_joints.size(); i++)
         {
             base::State *state_temp = si_->allocState();
@@ -263,6 +264,7 @@ void ompl::geometric::PRM::setup()
             addMilestone(si_->cloneState(state_temp));
         }
         OMPL_INFORM("PRM RoadMap has loaded %d manually input joint points", milestoneCount());
+        std::cout << "PRM RoadMap has loaded " << milestoneCount() << " manually input joint points" << std::endl;
     }
 }
 
