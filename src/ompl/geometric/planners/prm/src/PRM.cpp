@@ -145,6 +145,66 @@ ompl::geometric::PRM::PRM(const base::PlannerData &data, bool starStrategy)
             nn_->add(m);
         }
     }
+    OMPL_INFORM("PRM RoadMap already has %d points", milestoneCount());
+}
+
+ompl::geometric::PRM::PRM(const base::PlannerData &data, const std::vector<std::vector<double>> joints,
+                          bool starStrategy, bool load_joints)
+  : PRM(data.getSpaceInformation(), starStrategy)
+{
+    if (data.numVertices() > 0)
+    {
+        // mapping between vertex id from PlannerData and Vertex in Boost.Graph
+        std::map<unsigned int, Vertex> vertices;
+        // helper function to create vertices as needed and update the vertices mapping
+        const auto &getOrCreateVertex = [&](unsigned int vertex_index) {
+            if (!vertices.count(vertex_index))
+            {
+                const auto &data_vertex = data.getVertex(vertex_index);
+                Vertex graph_vertex = boost::add_vertex(g_);
+                stateProperty_[graph_vertex] = si_->cloneState(data_vertex.getState());
+                totalConnectionAttemptsProperty_[graph_vertex] = 1;
+                successfulConnectionAttemptsProperty_[graph_vertex] = 0;
+                vertices[vertex_index] = graph_vertex;
+            }
+            return vertices.at(vertex_index);
+        };
+
+        specs_.multithreaded = false;  // temporarily set to false since nn_ is used only in single thread
+        nn_.reset(tools::SelfConfig::getDefaultNearestNeighbors<Vertex>(this));
+        specs_.multithreaded = true;
+        nn_->setDistanceFunction([this](const Vertex a, const Vertex b) { return distanceFunction(a, b); });
+
+        for (size_t vertex_index = 0; vertex_index < data.numVertices(); ++vertex_index)
+        {
+            Vertex m = getOrCreateVertex(vertex_index);
+            std::vector<unsigned int> neighbor_indices;
+            data.getEdges(vertex_index, neighbor_indices);
+            if (neighbor_indices.empty())
+            {
+                disjointSets_.make_set(m);
+            }
+            else
+            {
+                for (const unsigned int neighbor_index : neighbor_indices)
+                {
+                    Vertex n = getOrCreateVertex(neighbor_index);
+                    totalConnectionAttemptsProperty_[n]++;
+                    successfulConnectionAttemptsProperty_[n]++;
+                    base::Cost weight;
+                    data.getEdgeWeight(vertex_index, neighbor_index, &weight);
+                    const Graph::edge_property_type properties(weight);
+                    boost::add_edge(m, n, properties, g_);
+                    uniteComponents(m, n);
+                }
+            }
+            nn_->add(m);
+        }
+    }
+    OMPL_INFORM("PRM RoadMap already has %d points", milestoneCount());
+
+    m_joints = joints;
+    m_load_joints = load_joints;
 }
 
 ompl::geometric::PRM::~PRM()
@@ -187,6 +247,22 @@ void ompl::geometric::PRM::setup()
     {
         OMPL_INFORM("%s: problem definition is not set, deferring setup completion...", getName().c_str());
         setup_ = false;
+    }
+
+    if (this->m_load_joints)
+    {
+        OMPL_INFORM("PRM RoadMap loading joint points ......");
+        for (size_t i = 0; i < m_joints.size(); i++)
+        {
+            base::State *state_temp = si_->allocState();
+            double *val = static_cast<ompl::base::RealVectorStateSpace::StateType *>(state_temp)->values;
+            for (size_t j = 0; j < m_joints[i].size(); j++)
+            {
+                val[j] = m_joints[i][j];
+            }
+            addMilestone(si_->cloneState(state_temp));
+        }
+        OMPL_INFORM("PRM RoadMap has loaded %d manually input joint points", milestoneCount());
     }
 }
 
